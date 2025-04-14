@@ -21,20 +21,22 @@ def reverse_for_loop(frames):
          
         
 
-"""def clean_data(df):
+def clean_data(df):
 
-    rf = df.dropna()
+    #rf = df.dropna()
+    x = df["age"].median()
+    rf.fillna({"age"})
     for frame in frames:
-        
+        pass
 
     return
 
-def json_to_frame():"""
+def read_in_json(json):
+    return pd.read_json(json)
+    
 
-
-
-
-reverse_for_loop(read_in_csv())
+#reverse_for_loop(read_in_csv())
+reverse_for_loop(read_in_json("uploads/sample.json"))
 
 
 
