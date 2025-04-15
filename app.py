@@ -3,6 +3,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
+from api import insert_bulk_users
+from process import clean_data, read_in_csv
 
 app = Flask(__name__)
 
@@ -39,6 +41,7 @@ def upload_file():
         file.save(filepath)
 
         # Redirect to /view/<filename> to show contents
+        insert_bulk_users(clean_data(read_in_csv(filepath)))
         return redirect(url_for('view_file', filename=filename))
 
     return "Invalid file type"

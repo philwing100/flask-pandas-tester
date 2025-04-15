@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-def read_in_csv():
+def read_in_csv(csv: str):
     #print(pd.__version__)
-    df = pd.read_csv('uploads/sample.csv')
+    df = pd.read_csv(csv)
     #print(df)
     #print(type(df))
     return df
@@ -20,23 +20,41 @@ def reverse_for_loop(frames):
          print(frames.iloc[i])
          
         
-
 def clean_data(df):
+    if not is_Frame(df):
+        print("❌ Invalid frame")
+        return "Invalid frame"
 
-    #rf = df.dropna()
-    x = df["age"].median()
-    rf.fillna({"age"})
-    for frame in frames:
-        pass
+    print("🧼 Cleaning data...")
+    if 'age' in df.columns:
+        df['age'] = df['age'].fillna(0).astype(int)
 
-    return
+    # 1. Trim whitespace in 'name' and 'city'
+    df['name'] = df['name'].astype(str).str.strip()
+    df['city'] = df['city'].astype(str).str.strip()
+
+    # 2. Normalize case (capitalize names and cities)
+    df['name'] = df['name'].str.title()
+    df['city'] = df['city'].str.title()
+
+    # 3. Convert age to numeric (non-numeric becomes NaN)
+    df['age'] = pd.to_numeric(df['age'], errors='coerce')
+
+    # 4. Drop rows where any of the important fields are missing
+    df.dropna(subset=['name', 'city', 'age'], inplace=True)
+
+    # 5. Drop duplicates
+    df.drop_duplicates(inplace=True)
+
+    print("✅ Cleaned", len(df), "rows")
+    return df.to_dict(orient="records")
 
 def read_in_json(json):
-    return pd.read_json(json)
-    
-
+    return pd.DataFrame(pd.read_json(json))
+     
 #reverse_for_loop(read_in_csv())
-reverse_for_loop(read_in_json("uploads/sample.json"))
+#reverse_for_loop(read_in_json("uploads/sample.json"))
+#clean_data(read_in_csv("uploads/sample.csv"))
 
 
 
