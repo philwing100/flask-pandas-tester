@@ -46,6 +46,11 @@ def upload_file():
 
     return "Invalid file type"
 
+@app.route("/view/<filename>")
+def view_file(filename):
+    return f"File {filename} uploaded and processed successfully!"
+
+
 # Entry point
 if __name__ == "__main__":
     app.run(debug=True)

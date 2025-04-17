@@ -24,29 +24,30 @@ def clean_data(df):
     if not is_Frame(df):
         print("❌ Invalid frame")
         return "Invalid frame"
-
+    
     print("🧼 Cleaning data...")
+
+    df.dropna(how='all', inplace=True)
+
+    #Remove white space and make titles normal
+
     if 'age' in df.columns:
+        df['age'] = pd.to_numeric(df['age'], errors='coerce')  # invalid strings -> NaN
         df['age'] = df['age'].fillna(0).astype(int)
+        df['age'] = df['age'].where((df['age'] >= 1) & (df['age'] <= 120), 0)
 
-    # 1. Trim whitespace in 'name' and 'city'
-    df['name'] = df['name'].astype(str).str.strip()
-    df['city'] = df['city'].astype(str).str.strip()
 
-    # 2. Normalize case (capitalize names and cities)
-    df['name'] = df['name'].str.title()
-    df['city'] = df['city'].str.title()
+    #df.dropna(subset=['name', 'city', 'age'], inplace=True
+    if 'name' in df.columns:
+        df['name'] = df['name'].astype(str).str.strip().str.title()
 
-    # 3. Convert age to numeric (non-numeric becomes NaN)
-    df['age'] = pd.to_numeric(df['age'], errors='coerce')
+    if 'city' in df.columns:
+        df['city'] = df['city'].astype(str).str.strip().str.title()
 
-    # 4. Drop rows where any of the important fields are missing
-    df.dropna(subset=['name', 'city', 'age'], inplace=True)
-
-    # 5. Drop duplicates
     df.drop_duplicates(inplace=True)
 
     print("✅ Cleaned", len(df), "rows")
+    print(df)
     return df.to_dict(orient="records")
 
 def read_in_json(json):
